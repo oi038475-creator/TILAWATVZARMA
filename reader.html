@@ -1,0 +1,12 @@
+<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>قراءة الكتاب</title>
+<style>body{margin:0;background:#e8eefc;font-family:Tahoma,Arial,sans-serif}header{position:sticky;top:0;background:#1d4ed8;color:#fff;padding:12px 14px;display:flex;gap:14px;align-items:center;z-index:2}header a{color:#fff;text-decoration:none;font-weight:700}#pages{padding:10px;display:grid;gap:10px;justify-items:center}canvas{width:100%;max-width:900px;height:auto;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.2)}#msg{text-align:center;padding:24px;color:#0b2150}</style></head><body>
+<header><a href="index.html">→ رجوع</a><span id="t"></span></header><div id="msg">جاري تحميل الكتاب…</div><div id="pages"></div>
+<script src="pdf.min.js"></script><script>
+var f=new URLSearchParams(location.search).get('f')||'',m=document.getElementById('msg');
+if(!/^[\w\-]+\.pdf$/.test(f)){m.textContent='ملف غير صالح'}else{
+document.getElementById('t').textContent=f==='book-signs.pdf'?'علامات الساعة':'ابن صياد والمسيح الدجال';
+pdfjsLib.GlobalWorkerOptions.workerSrc='pdf.worker.min.js';
+pdfjsLib.getDocument(f).promise.then(function(pdf){m.remove();var box=document.getElementById('pages'),chain=Promise.resolve();
+for(var i=1;i<=pdf.numPages;i++){(function(n){chain=chain.then(function(){return pdf.getPage(n).then(function(pg){var s=Math.min(2,1400/pg.getViewport({scale:1}).width),vp=pg.getViewport({scale:s}),c=document.createElement('canvas');c.width=vp.width;c.height=vp.height;box.appendChild(c);return pg.render({canvasContext:c.getContext('2d'),viewport:vp}).promise})})})(i)}
+}).catch(function(){m.textContent='تعذّر فتح الكتاب'})}
+</script></body></html>
